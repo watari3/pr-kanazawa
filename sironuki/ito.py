@@ -7,7 +7,9 @@ import numpy as np
  # 第二引数：カラータイプ　-1: RGBA, 0: グレースケール, 1: RGB
 img = cv2.imread("sample_picture.jpg", 1) # 画像をグレースケールに変換して読み込む
 orgHeight, orgWidth = img.shape[:2]
-halfsize = (orgHeight//2, orgWidth//2)
+print("orig_height" + str(orgHeight))
+print("orig_width" + str(orgWidth))
+halfsize = (orgHeight//10, orgWidth//10)
 
 # 画像をHSVに変換
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -23,13 +25,21 @@ img_mask = cv2.inRange(hsv, lower_rail, upper_rail)
 # フレーム画像とマスク画像の共通の領域を抽出する。
 img_color = cv2.bitwise_and(img, img, mask=img_mask)
 
-cv2.imshow("SHOW COLOR IMAGE", img_color)
+# cv2.imshow("SHOW COLOR IMAGE", img_color)
 
 # リサイズ処理
  # とりあえず半分に
 halfImg = cv2.resize(img_color, halfsize)
-resizeImg = cv2.resize(halfImg,(orgHeight,orgWidth))
+resizeImg = cv2.resize(halfImg,(orgWidth,orgHeight))
 cv2.imshow("resizeImg",resizeImg)
+
+# グレースケール
+gray = cv2.cvtColor(resizeImg, cv2.COLOR_BGR2GRAY)
+
+# 二値化
+_ ,binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
+cv2.imshow('binary.png', binary)
+
 # 画像の表示
  # 第一引数：ウィンドウを識別するための名前
  # 第二引数：表示する画像
