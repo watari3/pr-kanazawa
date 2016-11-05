@@ -6,6 +6,8 @@ import numpy as np
  # 第一引数：読み込む画像のパス
  # 第二引数：カラータイプ　-1: RGBA, 0: グレースケール, 1: RGB
 img = cv2.imread("sample_picture.jpg", 1) # 画像をグレースケールに変換して読み込む
+orgHeight, orgWidth = img.shape[:2]
+halfsize = (orgHeight//2, orgWidth//2)
 
 # 画像をHSVに変換
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -23,10 +25,15 @@ img_color = cv2.bitwise_and(img, img, mask=img_mask)
 
 cv2.imshow("SHOW COLOR IMAGE", img_color)
 
+# リサイズ処理
+ # とりあえず半分に
+halfImg = cv2.resize(img_color, halfsize)
+resizeImg = cv2.resize(halfImg,(orgHeight,orgWidth))
+cv2.imshow("resizeImg",resizeImg)
 # 画像の表示
  # 第一引数：ウィンドウを識別するための名前
  # 第二引数：表示する画像
-cv2.imshow("img", img)
+# cv2.imshow("img", img)
 
 # キーが押させるまで画像を表示したままにする
  # 第一引数：キーイベントを待つ時間　0: 無限, 0以上: 指定ミリ秒待つ
