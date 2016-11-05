@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 import cv2
 import numpy as np
+import sys
+# 引数読み込み
+args = sys.argv
 
 # 画像の読み込み
  # 第一引数：読み込む画像のパス
  # 第二引数：カラータイプ　-1: RGBA, 0: グレースケール, 1: RGB
-img = cv2.imread("sample_picture.jpg", 1) # 画像をグレースケールに変換して読み込む
+img = cv2.imread(args[1], 1)
+# 元の画像サイズを取得
 orgHeight, orgWidth = img.shape[:2]
-print("orig_height" + str(orgHeight))
-print("orig_width" + str(orgWidth))
-halfsize = (orgHeight//10, orgWidth//10)
+# リサイズ時の縮小比率
+downsize = (orgHeight//10, orgWidth//10)
 
 # 画像をHSVに変換
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
 # 取得する色の範囲を指定する
-#lower_rail = np.array([80, 50, 50])
 lower_rail = np.array([27, 50, 50])
 upper_rail = np.array([120, 255, 255])
 
@@ -25,29 +27,18 @@ img_mask = cv2.inRange(hsv, lower_rail, upper_rail)
 # フレーム画像とマスク画像の共通の領域を抽出する。
 img_color = cv2.bitwise_and(img, img, mask=img_mask)
 
-# cv2.imshow("SHOW COLOR IMAGE", img_color)
-
 # リサイズ処理
- # とりあえず半分に
-halfImg = cv2.resize(img_color, halfsize)
+  # 縮小
+halfImg = cv2.resize(img_color, downsize)
+  # 拡大
 resizeImg = cv2.resize(halfImg,(orgWidth,orgHeight))
-cv2.imshow("resizeImg",resizeImg)
 
 # グレースケール
 gray = cv2.cvtColor(resizeImg, cv2.COLOR_BGR2GRAY)
 
 # 二値化
 _ ,binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
-cv2.imshow('binary.png', binary)
 
-# 画像の表示
- # 第一引数：ウィンドウを識別するための名前
- # 第二引数：表示する画像
-# cv2.imshow("img", img)
-
-# キーが押させるまで画像を表示したままにする
- # 第一引数：キーイベントを待つ時間　0: 無限, 0以上: 指定ミリ秒待つ
-cv2.waitKey(0)
-
-# 作成したウィンドウを全て破棄
-cv2.destroyAllWindows()
+# ネガポジ反転
+negaposi = cv2.bitwise_not(binary)
+cv2.imwrite("output.jpg",negaposi)
