@@ -11,8 +11,9 @@ img = cv2.imread("sample_picture.jpg", 1) # 画像をグレースケールに変
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
 # 取得する色の範囲を指定する
-lower_rail = np.array([20, 50, 50])
-upper_rail = np.array([100, 255, 255])
+#lower_rail = np.array([80, 50, 50])
+lower_rail = np.array([27, 50, 50])
+upper_rail = np.array([120, 255, 255])
 
 # 指定した色に基づいたマスク画像の生成
 img_mask = cv2.inRange(hsv, lower_rail, upper_rail)
